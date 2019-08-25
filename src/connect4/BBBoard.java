@@ -100,6 +100,10 @@ public class BBBoard {
         return turn;
     }
 
+    public void nullMove() {
+        turn = (turn + 1) % 2;
+    }
+
     public int getPlayer(int row, int col) {
         if (bitboardA.getBit(Utils.rowColToSquare(row, col))) {
             return Utils.PLAYERA;

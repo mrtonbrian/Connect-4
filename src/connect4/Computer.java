@@ -1,6 +1,5 @@
 package connect4;
 
-import java.util.HashMap;
 import java.util.Stack;
 
 public class Computer extends Player {
@@ -8,7 +7,6 @@ public class Computer extends Player {
     private static final int TIME_PER_MOVE = 500;
     private static final int[] dx = {+1, +0, +1, -1};
     private static final int[] dy = {+0, +1, +1, +1};
-    private HashMap<Long, Integer> table;
     private BBBoard board;
     private int nodesAB;
     private Stack<Integer> lastMoves = new Stack<>();
@@ -46,7 +44,7 @@ public class Computer extends Player {
         searchStopped = (now - startTime >= TIME_PER_MOVE);
     }
 
-    private int miniMaxAB(int depth, int alpha, int beta, boolean maximizingPlayer) {
+    private int miniMaxAB(int depth, int alpha, int beta, boolean doNull) {
         nodesAB++;
         if (depth == 0 || board.checkWinner() != Utils.NO_RESULT) {
             return heuristicScore();
@@ -57,66 +55,59 @@ public class Computer extends Player {
         }
 
         if (searchStopped) {
-            return 0;
+            return -Integer.MAX_VALUE;
         }
+        int bestScore = -Integer.MAX_VALUE;
+        /*
+        if (doNull && depth >= 4) {
+            board.nullMove();
+            int score = -miniMaxAB(depth - 4, -beta, -beta + 1, false);
+            board.nullMove();
 
-        if (table.containsKey(board.hash())) {
-            int value = table.get(board.hash());
-            if (beta > value) {
-                if (alpha >= beta) {
-                    return beta;
+            if (searchStopped) {
+                return -Integer.MAX_VALUE;
+            }
+
+            if (score >= beta) {
+                return beta;
+            }
+        }
+         */
+        MoveList moveList = validSpots();
+
+        moveList.sort();
+        for (Move move : moveList.getMoves()) {
+            makeMove(move.getMove());
+            int score = -miniMaxAB(depth - 1, -beta, -alpha, true);
+            takeMove();
+
+            if (searchStopped) {
+                return -Integer.MAX_VALUE;
+            }
+
+            if (score > bestScore) {
+                bestScore = score;
+                if (score > alpha) {
+                    if (score >= beta) {
+                        return beta;
+                    }
+                    alpha = score;
                 }
             }
         }
 
-        if (maximizingPlayer) {
-            int v = -1000000000;
-            MoveList moveList = validSpots();
-
-            moveList.sort();
-            for (Move move : moveList.getMoves()) {
-                makeMove(move.getMove());
-                v = Math.max(v, miniMaxAB(depth - 1, alpha, beta, false));
-                takeMove();
-
-                alpha = Math.max(alpha, v);
-
-                if (beta <= alpha) {
-                    break;
-                }
-            }
-            table.put(board.hash(), v - (-Utils.TERMINAL_SCORE) + 1);
-            return v;
-        } else {
-            int v = +1000000000;
-            MoveList moveList = validSpots();
-
-            moveList.sort();
-            for (Move move : moveList.getMoves()) {
-                makeMove(move.getMove());
-                v = Math.min(v, miniMaxAB(depth - 1, alpha, beta, true));
-                takeMove();
-
-                beta = Math.min(beta, v);
-
-                if (beta <= alpha) {
-                    break;
-                }
-            }
-            table.put(board.hash(), v - (-Utils.TERMINAL_SCORE) + 1);
-            return v;
-        }
+        return alpha;
     }
 
     private int heuristicScore() {
         int result = board.checkWinner();
-        if (result == getPlayerNum()) {
+        if (result == board.getTurn()) {
             return Utils.TERMINAL_SCORE;
-        } else if (isToWin(getPlayerNum())) {
+        } else if (isToWin(board.getTurn())) {
             return Utils.TERMINAL_SCORE / 10;
-        } else if (result == (getPlayerNum() + 1) % 2) {
+        } else if (result == (board.getTurn() + 1) % 2) {
             return -Utils.TERMINAL_SCORE;
-        } else if (isToWin((getPlayerNum() + 1) % 2)) {
+        } else if (isToWin((board.getTurn() + 1) % 2)) {
             return -Utils.TERMINAL_SCORE / 10;
         } else if (result == Utils.TIE) {
             return 0;
@@ -127,7 +118,13 @@ public class Computer extends Player {
         int numCompThree = findNumThrees(getPlayerNum());
         int numPlayThree = findNumThrees((getPlayerNum() + 1) % 2);
 
-        return 40 * (numCompFours - numPlayFours) + 10 * (numCompThree - numPlayThree);
+        int score = 40 * (numCompFours - numPlayFours) + 10 * (numCompThree - numPlayThree);
+
+        if (board.getTurn() == getPlayerNum())  {
+            return score;
+        } else {
+            return -score;
+        }
     }
 
     private int findNumWaysToWin(int color) {
@@ -223,7 +220,6 @@ public class Computer extends Player {
     }
 
     public int searchPosition() {
-        table = new HashMap<>();
         startTime = System.currentTimeMillis();
         searchStopped = false;
 
@@ -243,7 +239,7 @@ public class Computer extends Player {
 
             for (Move move : moveList.getMoves()) {
                 makeMove(move.getMove());
-                int moveScore = miniMaxAB(depth, -1000000000, 1000000000, false);
+                int moveScore = -miniMaxAB(depth, -10000, 10000, true);
                 takeMove();
                 // Moves Likely To Be In Same Goodness-Order
                 // Essentially A Very Simple History Heuristic

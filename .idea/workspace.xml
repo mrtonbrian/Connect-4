@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="07df9800-82eb-445d-b914-767049c29e68" name="Default Changelist" comment="" />
+    <list default="true" id="07df9800-82eb-445d-b914-767049c29e68" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Connect4/connect4/Computer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Connect4/connect4/Computer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Connect4/connect4/Move.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Connect4/connect4/Move.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Connect4/connect4/MoveList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Connect4/connect4/MoveList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Connect4/connect4/Utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Connect4/connect4/Utils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connect4/BBBoard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/connect4/BBBoard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connect4/Computer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/connect4/Computer.java" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +98,7 @@
       <workItem from="1564510828575" duration="11122000" />
       <workItem from="1564524737135" duration="6674000" />
       <workItem from="1564531906654" duration="284000" />
+      <workItem from="1566705438618" duration="636000" />
     </task>
     <servers />
   </component>
@@ -101,7 +110,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
